@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Consonant Lab — Listening &amp; Pronunciation</title>
+<meta name="description" content="Listen, review and practise English consonants: minimal pairs, sound sorting and spelling-to-sound rules.">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,900;1,9..144,500&family=Inter:wght@300;400;500;600;700&family=Spline+Sans+Mono:wght@400;500&family=Gentium+Plus:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23050c12'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='%2300f5c4' font-family='serif'%3E%CA%83%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+<canvas id="particles"></canvas>
+<a class="sr-only" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">ʃ</span>
+      <span class="brand-txt"><strong>Consonant Lab</strong><small>Listen · Review · Identify</small></span>
+    </div>
+    <div class="audiobar">
+      <label class="field">
+        <span class="field-lbl">Voice</span>
+        <select id="voiceSelect" class="sel-sm" aria-label="Choose a speaking voice"></select>
+      </label>
+      <label class="field">
+        <span class="field-lbl">Speed <output id="rateOut">0.90</output></span>
+        <input id="rateRange" type="range" min="0.6" max="1.1" step="0.05" value="0.9" aria-label="Speaking speed">
+      </label>
+      <button class="nav-btn" id="testVoice" type="button">Test</button>
+    </div>
+    <p class="hint" id="voiceHint" hidden style="flex-basis:100%;color:var(--pink)">
+      This device only offers a basic robotic voice. Open the page in Chrome or Edge for a natural-sounding one.
+    </p>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Sections">
+    <button class="tab active" data-view="plan" type="button">Study plan</button>
+    <button class="tab" data-view="review" type="button">Review</button>
+    <button class="tab" data-view="lab" type="button">Sound lab</button>
+    <button class="tab" data-view="practice" type="button">Practice</button>
+    <button class="tab" data-view="progress" type="button">Progress</button>
+  </nav>
+</header>
+
+<main id="main" class="wrap">
+
+<!-- ══════════ STUDY PLAN ══════════ -->
+<section class="view active" id="view-plan">
+  <div class="cover">
+    <div class="eyebrow">English · Consonants in detail</div>
+    <h1 class="hero-title"><span class="grad-teal">Train your ear</span><br><span class="grad-pink">before your mouth</span></h1>
+    <p class="hero-sub">Ten short units. Each one gives you a two-minute review — how the sound is made and how it is spelled — and then four drills where <strong>you</strong> identify the sound. No clues during the drills.</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-val grad-teal" id="statUnits">10</span><span class="stat-lbl">Units</span></div>
+      <div class="stat"><span class="stat-val grad-pink" id="statItems">—</span><span class="stat-lbl">Drill items</span></div>
+      <div class="stat"><span class="stat-val grad-green" id="statMastered">0</span><span class="stat-lbl">Mastered</span></div>
+    </div>
+    <div class="gate-form">
+      <label class="field-lbl" for="studentName">Your full name</label>
+      <input type="text" id="studentName" class="form-input" placeholder="Write your name here" autocomplete="name">
+      <button class="cta-btn" id="startNext">Start Unit 1 <span class="btn-arrow">→</span></button>
+    </div>
+    <div class="menu-actions">
+      <button class="nav-btn" id="printPlan" type="button">Print the plan</button>
+    </div>
+  </div>
+
+  <div class="how">
+    <h2 class="sec-title">How each unit works</h2>
+    <ol class="how-steps">
+      <li><span class="how-n">1</span><h3>Review</h3><p>Read the card, use a mirror, touch your throat to feel the voicing. Two minutes, no test.</p></li>
+      <li><span class="how-n">2</span><h3>Minimal pairs</h3><p>You hear one word. Choose which of the two it was — nothing is marked for you.</p></li>
+      <li><span class="how-n">3</span><h3>In a sentence</h3><p>The same contrast, but inside natural speech, where the word is not isolated.</p></li>
+      <li><span class="how-n">4</span><h3>Sound sorting</h3><p>Say the word yourself and decide which sound it has. The spelling will try to trick you.</p></li>
+      <li><span class="how-n">5</span><h3>Spelling rules</h3><p>Given a spelling pattern, choose the sound. This is what transfers to new words.</p></li>
+    </ol>
+  </div>
+
+  <h2 class="sec-title">The sequence</h2>
+  <div class="trial-grid" id="planList"></div>
+  <p class="prof-line" style="text-align:center">Colegio Nocturno de Cariari · Designed by <span class="credit-name">Rosney Hernández</span></p>
+</section>
+
+<!-- ══════════ REVIEW ══════════ -->
+<section class="view" id="view-review">
+  <div class="viewhead">
+    <div><div class="eyebrow">Step 1 of every unit</div><h2 class="grad-teal">Review</h2></div>
+    <label class="field"><span class="field-lbl">Unit</span><select id="reviewUnit" class="sel-sm"></select></label>
+  </div>
+  <div id="reviewBody"></div>
+</section>
+
+<!-- ══════════ SOUND LAB ══════════ -->
+<section class="view" id="view-lab">
+  <div class="viewhead">
+    <div><div class="eyebrow">Free exploration</div><h2 class="grad-pink">Sound lab</h2></div>
+    <p class="legend"><span><span class="dot vl"></span>voiceless — air only</span><span><span class="dot vd"></span>voiced — the throat vibrates</span></p>
+  </div>
+  <p class="hint" style="margin-bottom:16px">Tap a symbol to hear the consonant itself, generated live — not a letter name, not a word.</p>
+  <div class="lab">
+    <div class="lab-grid" id="labGrid" role="listbox" aria-label="Consonant sounds"></div>
+    <aside class="arena" id="labPanel" aria-live="polite"></aside>
+  </div>
+</section>
+
+<!-- ══════════ PRACTICE ══════════ -->
+<section class="view" id="view-practice">
+  <div class="viewhead">
+    <div><div class="eyebrow">Step 2 — you identify, alone</div><h2 class="grad-teal">Practice</h2></div>
+    <label class="field"><span class="field-lbl">Unit</span><select id="practiceUnit" class="sel-sm"></select></label>
+  </div>
+
+  <div class="trial-grid" id="drillPicker"></div>
+
+  <div class="arena" id="runner" hidden>
+    <div class="game-topbar">
+      <div>
+        <div class="arena-kicker" id="runnerKind">Minimal pairs</div>
+        <div class="arena-prompt" id="runnerTitle">Which word did you hear?</div>
+      </div>
+      <div class="hud">
+        <div class="hud-chip"><span class="hud-label">Item</span><span class="grad-teal" id="posCount">1/8</span></div>
+        <div class="hud-chip"><span class="hud-label">Correct</span><span class="grad-pink" id="scoreCount">0</span></div>
+        <div class="hud-chip" id="streakChip" hidden><span class="hud-label">Streak</span><span class="grad-green" id="streakN">0</span></div>
+      </div>
+    </div>
+    <div class="prog-bar"><span id="progFill"></span></div>
+    <div class="stage" id="stage"></div>
+    <div class="verdict" id="feedback"></div>
+    <div class="runner-foot">
+      <button class="nav-btn" id="replayBtn" type="button">▶ Play again <kbd>R</kbd></button>
+      <button class="nav-btn" id="slowBtn" type="button">Slower</button>
+      <button class="nav-btn" id="quitDrill" type="button">Exit</button>
+      <button class="cta-btn small-cta" id="nextBtn" type="button" hidden>Next <kbd>↵</kbd></button>
+    </div>
+  </div>
+
+  <div class="score-box" id="results" hidden></div>
+
+  <div class="arena mic" id="micCard">
+    <div>
+      <h3>Record yourself</h3>
+      <p>Say the pair out loud, then listen back. If you cannot hear a difference between your two words, your listener will not hear one either.</p>
+    </div>
+    <div class="menu-actions" style="margin:0">
+      <button class="nav-btn" id="recBtn" type="button">● Record</button>
+      <audio id="recAudio" controls hidden></audio>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ PROGRESS ══════════ -->
+<section class="view" id="view-progress">
+  <div class="viewhead">
+    <div><div class="eyebrow">Your record</div><h2 class="grad-pink">Progress</h2></div>
+    <div class="menu-actions" style="margin:0">
+      <button class="nav-btn" id="sendNow" type="button">Send to teacher</button>
+      <button class="nav-btn" id="exportCsv" type="button">Export CSV</button>
+      <button class="nav-btn" id="copyCode" type="button">Copy code</button>
+      <button class="nav-btn danger" id="resetAll" type="button">Reset</button>
+    </div>
+  </div>
+
+  <div class="panel grid2">
+    <label class="field">
+      <span class="field-lbl">Student name (goes into the report)</span>
+      <input id="studentName2" type="text" class="form-input" placeholder="e.g. Ana Vargas — 11-2" autocomplete="name">
+    </label>
+    <label class="field">
+      <span class="field-lbl">Group / section</span>
+      <input id="studentGroup" type="text" class="form-input" placeholder="e.g. 11-2" autocomplete="off">
+    </label>
+    <label class="field" style="grid-column:1/-1">
+      <span class="field-lbl">Teacher spreadsheet endpoint (Google Apps Script /exec URL)</span>
+      <input id="endpointUrl" type="url" class="form-input" placeholder="https://script.google.com/macros/s/.../exec">
+    </label>
+    <p class="hint" style="grid-column:1/-1">
+      <span class="sync" id="syncState"><i></i><span id="syncText">not connected</span></span><br>
+      Every finished drill is sent automatically when an endpoint is set. Nothing else leaves this device.
+    </p>
+  </div>
+
+  <div class="panel">
+    <table class="tbl" id="progressTable">
+      <thead><tr><th>Unit</th><th>Best</th><th>Attempts</th><th>Mastery</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="panel">
+    <h3 class="sec-title" style="margin:0 0 14px">Recent drills</h3>
+    <ol class="log-list" id="logList"><li>Nothing yet. Finish a drill and it appears here.</li></ol>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <p>Sequence based on <em>Consonants in Detail</em> · all practice items written for this app.</p>
+  <p>Designed by <span class="credit-name">Rosney Hernández</span></p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="data.js"></script>
+<script src="synth.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
